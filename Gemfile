@@ -9,6 +9,7 @@ gem "rails", "~> 7.0.5"
 
 gem 'active_model_serializers'
 gem 'bcrypt', '~> 3.1.7'
+gem 'faraday'
 gem 'jwt'
 gem 'pundit'
 gem 'rack-cors'

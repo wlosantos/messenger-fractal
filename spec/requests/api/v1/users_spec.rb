@@ -2,16 +2,19 @@ require "rails_helper"
 
 RSpec.describe "User Api", type: :request do
   before { host! "messenger-fractal.com.br" }
+  let(:user) { create(:user) }
+  let(:token) { JwtAuth::TokenProvider.issue_token({ email: user.email, fractal_id: user.fractal_id }) }
   let(:headers) do
     {
       "Accept" => "application/vnd.messenger-fractal.v1",
-      "Content-Type" => Mime[:json].to_s
+      "Content-Type" => Mime[:json].to_s,
+      "Authorization" => "Bearer #{token}"
     }
   end
 
   describe "GET /users" do
     before do
-      create_list(:user, 5)
+      create_list(:user, 4)
       get "/api/users", params: {}, headers:
     end
 
