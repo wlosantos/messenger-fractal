@@ -13,6 +13,10 @@ RSpec.describe App, type: :model do
     end
   end
 
+  describe "associations" do
+    it { is_expected.to have_many(:rooms).dependent(:destroy) }
+  end
+
   describe "create app" do
     context "successfully" do
       subject { create(:app) }

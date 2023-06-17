@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 20_230_617_170_717) do
+ActiveRecord::Schema[7.0].define(version: 20_230_617_180_605) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -30,6 +30,21 @@ ActiveRecord::Schema[7.0].define(version: 20_230_617_170_717) do
     t.index %w[resource_type resource_id], name: "index_roles_on_resource"
   end
 
+  create_table "rooms", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "kind", default: 0, null: false
+    t.boolean "read_only", default: false, null: false
+    t.boolean "moderated", default: false, null: false
+    t.bigint "origin_id", null: false
+    t.bigint "moderator_id"
+    t.bigint "app_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["app_id"], name: "index_rooms_on_app_id"
+    t.index ["moderator_id"], name: "index_rooms_on_moderator_id"
+    t.index ["origin_id"], name: "index_rooms_on_origin_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "name", null: false
     t.string "email", null: false
@@ -47,4 +62,8 @@ ActiveRecord::Schema[7.0].define(version: 20_230_617_170_717) do
     t.index %w[user_id role_id], name: "index_users_roles_on_user_id_and_role_id"
     t.index ["user_id"], name: "index_users_roles_on_user_id"
   end
+
+  add_foreign_key "rooms", "apps"
+  add_foreign_key "rooms", "users", column: "moderator_id"
+  add_foreign_key "rooms", "users", column: "origin_id"
 end
