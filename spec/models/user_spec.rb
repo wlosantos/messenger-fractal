@@ -29,6 +29,11 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe "associations" do
+    it { is_expected.to have_many(:moderator_rooms).class_name('Room').with_foreign_key('moderator_id') }
+    it { is_expected.to have_many(:origin_rooms).class_name('Room').with_foreign_key('origin_id') }
+  end
+
   describe "create user" do
     context "successfully" do
       let!(:user) { build(:user) }
