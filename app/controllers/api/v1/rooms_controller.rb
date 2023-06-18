@@ -1,7 +1,8 @@
 module Api
   module V1
     class RoomsController < ApplicationController
-      before_action :set_room, only: %i[show update destroy]
+      before_action :set_room, only: %i[show update destroy participants add_participant remove_participant change_role]
+      before_action :set_room_participant, only: %i[remove_participant change_role]
 
       def index
         app = App.find(params[:app_id])
@@ -13,7 +14,7 @@ module Api
 
       def show
         authorize @room
-        render json: @room, serializer: RoomSerializer, show_messager: false, status: :ok
+        render json: @room, serializer: RoomSerializer, show_messager: true, status: :ok
       end
 
       def create
@@ -48,6 +49,28 @@ module Api
         head 204
       end
 
+      def add_participant
+        room_participant = @room.room_participants.new(room_participant_params)
+        if @room.room_participants.exists?(user_id: room_participant.user_id)
+          render json: { errors: { message: "User already exists" } }, status: :unprocessable_entity
+        elsif room_participant.save
+          render json: room_participant, status: :created
+        else
+          render json: { errors: room_participant.errors }, status: :unprocessable_entity
+        end
+      end
+
+      def remove_participant
+        return unless @room_participant.destroy
+
+        head 204
+      end
+
+      def change_role
+        @room_participant.update(is_moderator: !@room_participant.is_moderator)
+        render json: @room_participant, status: :ok
+      end
+
       private
 
       def set_room
@@ -56,8 +79,18 @@ module Api
         head 404
       end
 
+      def set_room_participant
+        @room_participant = @room.room_participants.find(params[:room_participant])
+      rescue ActiveRecord::RecordNotFound
+        head 404
+      end
+
       def room_params
         params.require(:room).permit(:name, :room_type, :read_only)
+      end
+
+      def room_participant_params
+        params.require(:room_participant).permit(:user_id, :is_moderator, :is_blocked)
       end
     end
   end

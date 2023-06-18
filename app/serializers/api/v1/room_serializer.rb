@@ -7,15 +7,15 @@ module Api
         object.app.name
       end
 
-      # def list_participants
-      #   object.room_participants.map do |room_participant|
-      #     {
-      #       user_id: room_participant.user_id,
-      #       name: room_participant.user.name,
-      #       moderator: room_participant.is_moderator
-      #     }
-      #   end
-      # end
+      def list_participants
+        object.room_participants.map do |room_participant|
+          {
+            user_id: room_participant.user_id,
+            name: room_participant.user.name,
+            moderator: room_participant.is_moderator
+          }
+        end
+      end
 
       # def attributes(*args)
       #   hash = super
