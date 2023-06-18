@@ -9,7 +9,14 @@ Rails.application.routes.draw do
       resources :apps do
         resources :rooms, only: %i[index create]
       end
-      resources :rooms, only: %i[index show update destroy]
+      resources :rooms, only: %i[index show update destroy] do
+        member do
+          get "/participants", to: "rooms#participants"
+          post "/participants", to: "rooms#add_participant"
+          delete "/participants/:room_participant", to: "rooms#remove_participant"
+          put "/participants/:room_participant", to: "rooms#change_role"
+        end
+      end
     end
   end
 end

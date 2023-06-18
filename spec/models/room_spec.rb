@@ -22,6 +22,8 @@ RSpec.describe Room, type: :model do
     it { is_expected.to belong_to(:app) }
     it { is_expected.to belong_to(:origin).class_name('User').with_foreign_key('origin_id') }
     it { is_expected.to belong_to(:moderator).class_name('User').with_foreign_key('moderator_id').optional }
+    it { is_expected.to have_many(:room_participants).dependent(:destroy) }
+    it { is_expected.to have_many(:users).through(:room_participants) }
   end
 
   describe "validations" do

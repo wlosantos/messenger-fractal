@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 20_230_617_180_605) do
+ActiveRecord::Schema[7.0].define(version: 20_230_617_212_206) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -28,6 +28,17 @@ ActiveRecord::Schema[7.0].define(version: 20_230_617_180_605) do
     t.datetime "updated_at", null: false
     t.index %w[name resource_type resource_id], name: "index_roles_on_name_and_resource_type_and_resource_id"
     t.index %w[resource_type resource_id], name: "index_roles_on_resource"
+  end
+
+  create_table "room_participants", force: :cascade do |t|
+    t.boolean "is_moderator", default: false, null: false
+    t.boolean "is_blocked", default: false, null: false
+    t.bigint "user_id", null: false
+    t.bigint "room_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["room_id"], name: "index_room_participants_on_room_id"
+    t.index ["user_id"], name: "index_room_participants_on_user_id"
   end
 
   create_table "rooms", force: :cascade do |t|
@@ -63,6 +74,8 @@ ActiveRecord::Schema[7.0].define(version: 20_230_617_180_605) do
     t.index ["user_id"], name: "index_users_roles_on_user_id"
   end
 
+  add_foreign_key "room_participants", "rooms"
+  add_foreign_key "room_participants", "users"
   add_foreign_key "rooms", "apps"
   add_foreign_key "rooms", "users", column: "moderator_id"
   add_foreign_key "rooms", "users", column: "origin_id"
