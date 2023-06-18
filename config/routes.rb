@@ -16,7 +16,9 @@ Rails.application.routes.draw do
           delete "/participants/:room_participant", to: "rooms#remove_participant"
           put "/participants/:room_participant", to: "rooms#change_role"
         end
+        resources :messages, only: %i[create]
       end
+      resources :messages, only: %i[update destroy]
     end
   end
 end
