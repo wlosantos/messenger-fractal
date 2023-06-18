@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 20_230_617_212_206) do
+ActiveRecord::Schema[7.0].define(version: 20_230_618_121_912) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -18,6 +18,21 @@ ActiveRecord::Schema[7.0].define(version: 20_230_617_212_206) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.string "content", default: "", null: false
+    t.integer "moderation_status", default: 0, null: false
+    t.datetime "moderated_at", precision: nil
+    t.datetime "refused_at", precision: nil
+    t.bigint "user_id", null: false
+    t.bigint "room_id", null: false
+    t.bigint "parent_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["parent_id"], name: "index_messages_on_parent_id"
+    t.index ["room_id"], name: "index_messages_on_room_id"
+    t.index ["user_id"], name: "index_messages_on_user_id"
   end
 
   create_table "roles", force: :cascade do |t|
@@ -74,6 +89,9 @@ ActiveRecord::Schema[7.0].define(version: 20_230_617_212_206) do
     t.index ["user_id"], name: "index_users_roles_on_user_id"
   end
 
+  add_foreign_key "messages", "messages", column: "parent_id"
+  add_foreign_key "messages", "rooms"
+  add_foreign_key "messages", "users"
   add_foreign_key "room_participants", "rooms"
   add_foreign_key "room_participants", "users"
   add_foreign_key "rooms", "apps"

@@ -34,6 +34,7 @@ RSpec.describe User, type: :model do
     it { is_expected.to have_many(:origin_rooms).class_name('Room').with_foreign_key('origin_id') }
     it { is_expected.to have_many(:room_participants).dependent(:destroy) }
     it { is_expected.to have_many(:rooms).through(:room_participants) }
+    it { is_expected.to have_many(:messages).dependent(:destroy) }
   end
 
   describe "create user" do

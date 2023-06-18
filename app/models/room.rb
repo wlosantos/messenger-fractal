@@ -2,6 +2,7 @@ class Room < ApplicationRecord
   belongs_to :app
   belongs_to :origin, class_name: 'User', foreign_key: 'origin_id'
   belongs_to :moderator, class_name: 'User', foreign_key: 'moderator_id', optional: true
+  has_many :messages, dependent: :destroy
 
   has_many :room_participants, dependent: :destroy
   has_many :users, through: :room_participants
